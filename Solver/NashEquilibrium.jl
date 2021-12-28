@@ -11,6 +11,7 @@ end
 function solve_nash(𝒫::SimpleGame)
     ℐ, 𝒜, R = tensorform(𝒫)
     model = Model(Ipopt.Optimizer)
+    set_silent(model)
     @variable(model, U[ℐ])
     @variable(model, π[i=ℐ,𝒜[i]] ≥ 0)
     @NLobjective(model, Min, 

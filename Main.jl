@@ -20,10 +20,9 @@ game = RockPaperScissors()
 # print_hierarchical_softmax(soft)
 
 println("Stimulate")
-sti = stimulate(game, 10)
+sti = stimulate(game, 1000000)
 print_stimulate(sti)
 
 # println("Gradient")
 # grad = solve_gradient(game, 20)
 # print_gradient(grad)
-
