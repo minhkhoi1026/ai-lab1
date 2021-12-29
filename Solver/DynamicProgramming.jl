@@ -3,7 +3,13 @@ struct POMGDynamicProgramming
     d # depth of conditional plans
 end
 
-function solve(M::POMGDynamicProgramming, 𝒫::POMG)
+function expand_conditional_plans(𝒫, Π)
+    ℐ, 𝒜, 𝒪 = 𝒫.ℐ, 𝒫.𝒜, 𝒫.𝒪
+    return [[ConditionalPlan(ai, Dict(oi => πi for oi in 𝒪[i]))
+                for πi in Π[i] for ai in 𝒜[i]] for i in ℐ]
+end
+
+function DynamicProgramming(M::POMGDynamicProgramming, 𝒫::POMG)
     ℐ, 𝒮, 𝒜, R, γ, b, d = 𝒫.ℐ, 𝒫.𝒮, 𝒫.𝒜, 𝒫.R, 𝒫.γ, M.b, M.d
     Π = [[ConditionalPlan(ai) for ai in 𝒜[i]] for i in ℐ]
     for t in 1:d
@@ -34,7 +40,7 @@ end
 function is_dominated(𝒫::POMG, Π, i, πi)
     ℐ, 𝒮 = 𝒫.ℐ, 𝒫.𝒮 
     jointΠnoti = joint([Π[j] for j in ℐ if j≠i])
-    π(πi′, πnoti) = [j==i ? πi′: πnoti[j > i ? j-1 : j] for j in ℐ]
+    π(πi′, πnoti) = [j==i ? πi′ : πnoti[j > i ? j-1 : j] for j in ℐ]
     Ui = Dict((πi′, πnoti, s) => evaluate_plan(𝒫, π(πi′, πnoti), s)[i]
             for πi′ in Π[i], πnoti in jointΠnoti,s in 𝒮)
     model = Model(Ipopt.Optimizer)

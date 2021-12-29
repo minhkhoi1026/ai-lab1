@@ -2,16 +2,19 @@ module POMGProblems
 
 using RandomNumbers
 using Distributions
-using LinearAlgebra
+using LinearAlgebra 
 using GridInterpolations
 using Parameters
 using JuMP
 using GLPK
+using Ipopt
+using Shuffle
 
 export
-    POMDP, DiscretePOMDP, CryingBaby, BoolDistribution,
-    POMG, MultiCaregiverCryingBaby
-    solve_pomg_nash
+    POMDP, DiscretePOMDP, CryingBaby, 
+    ValueIteration, BoolDistribution, solve_conditional_plan_nonlinear, NonlinearProgramming, solve_controller_nonlinear,
+    POMG, MultiCaregiverCryingBaby,
+    POMGNashEquilibrium, solve_pomg_nash, POMGDynamicProgramming, DynamicProgramming
 
 import Base: <, ==, rand, vec
 
@@ -38,5 +41,6 @@ include("Solver/DynamicProgramming.jl")
 include("Problems/CryingBaby.jl")
 include("Problems/Multicaregiver.jl")
 
+include("Other/Utilities.jl")
 end # module
 
