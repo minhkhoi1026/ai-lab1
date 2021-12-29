@@ -10,23 +10,33 @@ using GLPK
 
 export
     POMDP, DiscretePOMDP, CryingBaby, BoolDistribution,
-    POMG, MultiCaregiverCryingBaby,
-    ValueIteration, value_iteration, solve
+    POMG, MultiCaregiverCryingBaby
+    solve_pomg_nash
 
 import Base: <, ==, rand, vec
 
 include("Other/SetCategorical.jl")
-
 include("Other/POMDP.jl")
 include("Other/DiscretePomdp.jl")
 include("Other/POMG.jl")
+include("Other/SimpleGame.jl")
+include("Other/Belief.jl")
 
+# Policy
+include("Policy/ConditionalPlan.jl")
+include("Policy/AlphaVectorPolicy.jl")
+include("Policy/Controller.jl")
+include("Policy/SimpleGamePolicy.jl")
+
+# Solver
+include("Solver/ConditionalPlanNonlinearProgramming.jl")
+include("Solver/ControllerNonlinearProgramming.jl")
+include("Solver/POMGNashEquilibrium.jl")
+include("Solver/DynamicProgramming.jl")
+
+# Problems
 include("Problems/CryingBaby.jl")
 include("Problems/Multicaregiver.jl")
-
-include("Other/Belief.jl")
-include("Solver/ConditionalPlan.jl")
-include("Solver/Controller.jl")
 
 end # module
 

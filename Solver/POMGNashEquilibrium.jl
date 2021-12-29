@@ -18,12 +18,12 @@ function expand_conditional_plans(𝒫, Π)
                 for πi in Π[i] for ai in 𝒜[i]] for i in ℐ]
 end
 
-function solve(M::POMGNashEquilibrium, 𝒫::POMG)
+function solve_pomg_nash(M::POMGNashEquilibrium, 𝒫::POMG)
     ℐ, γ, b, d = 𝒫.ℐ, 𝒫.γ, M.b, M.d
     Π = create_conditional_plans(𝒫, d)
     U = Dict(π => utility(𝒫, b, π) for π in joint(Π))
     𝒢 = SimpleGame(γ, ℐ, Π, π->U[π])
-    π = solve(NashEquilibrium(), 𝒢)
+    π = solve_nash(𝒢)
     return Tuple(argmax(πi.p) for πi in π)
 end
 
