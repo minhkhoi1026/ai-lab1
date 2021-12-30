@@ -34,6 +34,7 @@ include("Policy/SimpleGamePolicy.jl")
 # Solver
 include("Solver/ConditionalPlanNonlinearProgramming.jl")
 include("Solver/ControllerNonlinearProgramming.jl")
+include("Solver/NashEquilibrium")
 include("Solver/POMGNashEquilibrium.jl")
 include("Solver/DynamicProgramming.jl")
 
