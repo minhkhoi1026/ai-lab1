@@ -1,39 +1,45 @@
-using plots
+using D3Trees
 
-function plot_alpha_vectors(policy, p_hungry, label="QMDP")
-	# calculate the maximum utility, which determines the action to take
-	current_belief = [p_hungry, 1-p_hungry]
-	feed_idx = Int(policy.action_map[1])+1
-	ignore_idx = Int(policy.action_map[2])+1
-	utility_feed = policy.alphas[feed_idx]' * current_belief # dot product
-	utility_ignore = policy.alphas[ignore_idx]' * current_belief # dot product
-	lw_feed, lw_ignore = 1, 1
-	check_feed, check_ignore = "", ""
-	if utility_feed >= utility_ignore
-		current_utility = utility_feed
-		lw_feed = 2
-		check_feed = "✓"
+number = Vector([1])
+children = Vector{Vector}()
+text = Vector{String}()
+
+# Action
+FEED = 1
+IGNORE = 2
+SING = 3
+Act = Dict(FEED => "FEED", IGNORE => "IGNORE", SING => "SING")
+
+# Observation
+CRYING = true
+QUIET = false
+Obs = Dict(CRYING => "Crying", QUIET => "Quiet")
+
+function createTree(π, number::Array, children::Array, text::Array, observation::Bool)
+    depth = number[1]
+	if number[1] == 1
+		o = ""
 	else
-		current_utility = utility_ignore
-		lw_ignore = 2
-		check_ignore = "✓"
+    	o = Obs[observation]
 	end
-	
-	# plot the alpha vector hyperplanes
-	plot(size=(600,340))
-	plot!(Int.([FULLₛ, HUNGRYₛ]), policy.alphas[ignore_idx],
-		  label="ignore ($label) $(check_ignore)", c=:red, lw=lw_ignore)
-	plot!(Int.([FULLₛ, HUNGRYₛ]), policy.alphas[feed_idx],
-		  label="feed ($label) $(check_feed)", c=:blue, lw=lw_feed)
-	
-	# plot utility of selected action
-	rnd(x) = round(x,digits=3)
-	scatter!([p_hungry], [current_utility], 
-		     c=:black, ms=5, label="($(rnd(p_hungry)), $(rnd(current_utility)))")
+    push!(children, [])
+    push!(text, o*"\n"*Act[π.a])
+    if (length(π.subplans) == 0)
+        return
+    end
+    
+    number[1] += 1
+    push!(children[depth], number[1])
+    createTree(π.subplans[QUIET], number, children, text, QUIET)
+    number[1] += 1
+    push!(children[depth], number[1])
+    createTree(π.subplans[CRYING], number, children, text, CRYING)
+end
 
-	title!("Alpha Vectors")
-	xlabel!("𝑝(hungry)")
-	ylabel!("utility 𝑈(𝐛)")
-	xlims!(0, 1)
-	ylims!(-40, 5)
+function drawConditionalPlanTree(π, number::Array, children::Array, text::Array, observation::Bool)
+    createTree(π, number, children, text, observation)
+    tree = D3Tree(children, 
+        text = text,
+        init_expand = 5)
+    return tree
 end

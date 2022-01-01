@@ -14,7 +14,9 @@ export
     POMDP, DiscretePOMDP, CryingBaby, 
     ValueIteration, BoolDistribution, solve_conditional_plan_nonlinear, NonlinearProgramming, solve_controller_nonlinear,
     POMG, MultiCaregiverCryingBaby,
-    POMGNashEquilibrium, solve_pomg_nash, POMGDynamicProgramming, DynamicProgramming
+    ConditionalPlan, POMGNashEquilibrium, solve_pomg_nash, POMGDynamicProgramming, DynamicProgramming,
+    loopNash, loopDynamicProgramming,
+    drawConditionalPlanTree
 
 import Base: <, ==, rand, vec
 
@@ -24,6 +26,7 @@ include("Other/DiscretePomdp.jl")
 include("Other/POMG.jl")
 include("Other/SimpleGame.jl")
 include("Other/Belief.jl")
+include("Other/visualize.jl")
 
 # Policy
 include("Policy/ConditionalPlan.jl")
@@ -43,5 +46,6 @@ include("Problems/CryingBaby.jl")
 include("Problems/Multicaregiver.jl")
 
 include("Other/Utilities.jl")
+
 end # module
 
