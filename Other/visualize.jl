@@ -3,7 +3,7 @@ using D3Trees
 number = Vector([1])
 children = Vector{Vector}()
 text = Vector{String}()
-style = Vector{String}()
+
 
 # Action
 FEED = 1
@@ -17,7 +17,7 @@ QUIET = false
 Obs = Dict(CRYING => "Crying", QUIET => "Quiet")
 
 # Style
-Sty = Dict(CRYING => "stroke:red", QUIET => "stroke:blue")
+Sty = Dict(CRYING => "stroke:red", QUIET => "stroke:green")
 
 function createTree(π, number::Array, children::Array, text::Array, observation::Bool, style::Array)
     depth = number[1]
@@ -43,7 +43,9 @@ function createTree(π, number::Array, children::Array, text::Array, observation
     createTree(π.subplans[CRYING], number, children, text, CRYING, style)
 end
 
-function drawConditionalPlanTree(π, number::Array, children::Array, text::Array, observation::Bool, style)
+function drawConditionalPlanTree(π, number::Array, children::Array, text::Array, observation::Bool)
+    style = Vector{String}()
+    
     createTree(π, number, children, text, observation, style)
     tree = D3Tree(children, 
         text = text,
