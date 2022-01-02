@@ -33,7 +33,7 @@ function MDP(mdp::DiscreteMDP; γ::Float64=discount(mdp))
         ordered_actions(mdp),
         (s,a, s′=nothing) -> begin
             S′ = transition(mdp, s, a)
-            if s′ == nothing
+            if s′ === nothing
                 return S′
             end
             return pdf(S′, s′)

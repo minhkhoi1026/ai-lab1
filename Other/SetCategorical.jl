@@ -15,6 +15,7 @@ struct SetCategorical{S}
         if ℓ₁ < 1e-6 || isinf(ℓ₁)
             return SetCategorical(elements)
         end
+        println(typeof(weights), " ", weights)
         distr = Categorical(normalize(weights,1))
         return new{S}(elements,distr)
     end

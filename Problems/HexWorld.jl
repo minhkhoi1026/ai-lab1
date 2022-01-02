@@ -1,6 +1,7 @@
 function hex_neighbors(hex::Tuple{Int,Int})
     i,j = hex
-    [(i+1,j),(i,j+1),(i-1,j+1),(i-1,j),(i,j-1),(i+1,j-1)]
+    # [(i+1,j),(i,j+1),(i-1,j+1),(i-1,j),(i,j-1),(i+1,j-1)]
+    [(i+1, j), (i+1, j-1), (i, j-1), (i-1, j), (i-1, j+1), (i, j+1)]
 end
 
 struct HexWorldMDP
@@ -40,7 +41,7 @@ struct HexWorldMDP
                 for (a,neigh) in enumerate(neighbors)
                     # Indended transition.
                     s′ = findfirst(h -> h == neigh, hexes)
-                    if s′ == nothing
+                    if s′ === nothing
                         # Off the map!
                         s′ = s
                         R[s,a] += r_bump_border*p_intended
@@ -51,7 +52,7 @@ struct HexWorldMDP
                     a_left = mod1(a+1, nA)
                     neigh_left = neighbors[a_left]
                     s′ = findfirst(h -> h == neigh_left, hexes)
-                    if s′ == nothing
+                    if s′ === nothing
                         # Off the map!
                         s′ = s
                         R[s,a] += r_bump_border*p_veer
@@ -62,7 +63,7 @@ struct HexWorldMDP
                     a_right = mod1(a-1, nA)
                     neigh_right = neighbors[a_right]
                     s′ = findfirst(h -> h == neigh_right, hexes)
-                    if s′ == nothing
+                    if s′ === nothing
                         # Off the map!
                         s′ = s
                         R[s,a] += r_bump_border*p_veer
@@ -107,32 +108,22 @@ const HexWorldDiscountFactor = 0.9
 #     HexWorldDiscountFactor
 # )
 
-function HexWorld()
+function StandardHexWorld()
     HexWorld = HexWorldMDP(
-        [(0,0),(1,0),(2,0),(3,0),(0,1),(1,1),(2,1),(-1,2),
-         (0,2),(1,2),(2,2),(3,2),(4,2),(5,2),(6,2),(7,2),
-         (8,2),(4,1),(5,0),(6,0),(7,0),(7,1),(8,1),(9,0)],
+        [(1,0), (2,0), (3,0), (4,0), (5,0), (6,0), (7,0), (8,0), (9,0), (10,0),
+        (1,1), (2,1), (3,1), (5,1), (8,1), (9,1),
+        (0,2), (1,2), (2,2), (3,2), (5,2), (6,2), (7,2), (9,2)],
         HexWorldRBumpBorder,
         HexWorldPIntended,
         Dict{Tuple{Int,Int}, Float64}(
-            (0,1)=>  5.0, # left side reward
-            (2,0)=>-10.0, # left side hazard
-            (9,0)=> 10.0, # right side reward
+            (1,1) =>  5.0,
+            (2,2) => -10.0,
+            (9,2) =>  10.0,
         ),
         HexWorldDiscountFactor
     )
     return HexWorld
 end
-
-# const StraightLineHexWorld = HexWorldMDP(
-#     [(0,0),(1,0),(2,0),(3,0),(4,0),(5,0),(6,0)],
-#     HexWorldRBumpBorder,
-#     HexWorldPIntended,
-#     Dict{Tuple{Int,Int}, Float64}(
-#         (6,0)=> 10.0, # right side reward
-#     ),
-#     HexWorldDiscountFactor
-# )
 
 function StraightLineHexWorld()
     StraightLineHexWorld = HexWorldMDP(
